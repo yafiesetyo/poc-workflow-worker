@@ -25,6 +25,7 @@ type (
 func WorkflowWorker(ctx context.Context, e []byte) error {
 	// unmarshal si data dr pub/sub nya
 	var req CommonPublishReq
+	fmt.Println("payload raw from pubsub", string(e))
 	err := json.Unmarshal(e, &req)
 	if err != nil {
 		logrus.Error("getting error when unmarshal, err: %v", err)
