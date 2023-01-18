@@ -22,13 +22,13 @@ type (
 	}
 )
 
-func WorkflowWorker(ctx context.Context, e []byte) {
+func WorkflowWorker(ctx context.Context, e []byte) error {
 	// unmarshal si data dr pub/sub nya
 	var req CommonPublishReq
 	err := json.Unmarshal(e, &req)
 	if err != nil {
 		logrus.Error("getting error when unmarshal, err: %v", err)
-		return
+		return err
 	}
 
 	fmt.Println("Incoming request", req)
@@ -36,14 +36,16 @@ func WorkflowWorker(ctx context.Context, e []byte) {
 	// decision utk hit endpoint mana
 	if req.Type == TypeFirstEndpoint {
 		// call ke first endpoint
-		return
+		return nil
 	}
 	if req.Type == TypeSecondEndpoint {
 		// call ke second endpoint
-		return
+		return nil
 	}
 	if req.Type == TypeThirdEndpoint {
 		// call ke third endpoint
-		return
+		return nil
 	}
+
+	return nil
 }
