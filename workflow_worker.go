@@ -3,7 +3,6 @@ package pocworkflowworker
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 
 	"github.com/sirupsen/logrus"
 )
@@ -32,23 +31,14 @@ type (
 
 func WorkflowWorker(ctx context.Context, e PubsubMsg) error {
 	// unmarshal si data dr pub/sub nya
-	var raw RawMsg
-	err := json.Unmarshal(e.Data, &raw)
-	if err != nil {
-		logrus.Error("getting error when unmarshal raw data, err: %v", err)
-		return err
-	}
-
-	logrus.Info("check raw msg ", raw.Data, " ", string(e.Data))
-
 	var req CommonPublishReq
-	err = json.Unmarshal(raw.Data, &req)
+	err := json.Unmarshal(e.Data, &req)
 	if err != nil {
-		logrus.Error("getting error when unmarshal common request, err: %v", err)
+		logrus.Error("getting error when unmarshal data, err: %v", err)
 		return err
 	}
 
-	fmt.Println("Incoming request", req)
+	logrus.Info("check msg ", req, " ", string(e.Data))
 
 	// decision utk hit endpoint mana
 	if req.Type == TypeFirstEndpoint {
