@@ -15,6 +15,14 @@ var (
 )
 
 type (
+	PubsubMsg struct {
+		Data []byte `json:"data"`
+	}
+
+	RawMsg struct {
+		Data json.RawMessage `json:"data"`
+	}
+
 	CommonPublishReq struct {
 		ID       uint64 `json:"id"`
 		RuleName string `json:"rule_name"`
@@ -22,13 +30,19 @@ type (
 	}
 )
 
-func WorkflowWorker(ctx context.Context, e []byte) error {
+func WorkflowWorker(ctx context.Context, e PubsubMsg) error {
 	// unmarshal si data dr pub/sub nya
-	var req CommonPublishReq
-	fmt.Println("payload raw from pubsub", string(e))
-	err := json.Unmarshal(e, &req)
+	var raw RawMsg
+	err := json.Unmarshal(e.Data, &raw)
 	if err != nil {
-		logrus.Error("getting error when unmarshal, err: %v", err)
+		logrus.Error("getting error when unmarshal raw data, err: %v", err)
+		return err
+	}
+
+	var req CommonPublishReq
+	err = json.Unmarshal(raw.Data, &req)
+	if err != nil {
+		logrus.Error("getting error when unmarshal common request, err: %v", err)
 		return err
 	}
 
