@@ -39,7 +39,7 @@ func WorkflowWorker(ctx context.Context, e PubsubMsg) error {
 		return err
 	}
 
-	logrus.Info("check raw msg", raw.Data)
+	logrus.Info("check raw msg ", raw.Data, " ", e)
 
 	var req CommonPublishReq
 	err = json.Unmarshal(raw.Data, &req)
